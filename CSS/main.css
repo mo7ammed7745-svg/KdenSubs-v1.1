@@ -128,13 +128,13 @@ header * {
 
 }
 
-.project_settigs .size {
+.size {
     display: grid;
     justify-items: center;
 
 }
 
-.project_settigs .size .column {
+.size .column {
     display: grid;
     justify-items: right;
 
@@ -264,4 +264,105 @@ canvas {
     background-color: hsl(212, 85%, 64%);
     box-shadow: 0px 0px 10px rgb(241, 132, 118);
 
+}
+
+.template_section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.template_section label {
+    white-space: nowrap;
+}
+
+.template_upload {
+    border: 2px dashed #84b9f5;
+    border-radius: 10px;
+    padding: 0.4rem 1rem;
+    cursor: pointer;
+    text-align: center;
+    color: #fff;
+    background-color: #84b9f562;
+}
+
+.template_upload:hover {
+    border-color: rgb(241, 132, 118);
+    background-color: #84b9f562;
+}
+
+.template_info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #fff;
+}
+
+.template_info button {
+    background: transparent;
+    border: 1px solid #f18476;
+    color: #f18476;
+    cursor: pointer;
+    font-size: 1.2rem;
+    border-radius: 50%;
+    width: 1.8rem;
+    height: 1.8rem;
+    line-height: 1;
+}
+
+.template_info button:hover {
+    background-color: #f1847622;
+}
+
+.template_options {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-bottom: 0.5rem;
+}
+
+.template_options input {
+    width: 8rem;
+}
+
+.advanced {
+    grid-column: 1 / -1;
+    border-top: 1px solid #84b9f5;
+    padding-top: 0.5rem;
+}
+
+.advanced summary {
+    cursor: pointer;
+    color: #84b9f5;
+    font-weight: bold;
+    text-align: center;
+    padding: 0.5rem;
+    border: 2px dashed #84b9f5;
+    border-radius: 10px;
+    background-color: #84b9f562;
+    list-style: none;
+    user-select: none;
+}
+
+.advanced summary::-webkit-details-marker {
+    display: none;
+}
+
+.advanced summary:hover {
+    border-color: #f18476;
+    color: #f18476;
+}
+
+.advanced .size {
+    padding-top: 0.5rem;
+}
+
+.advanced .size input {
+    width: 10rem;
+}
+
+.advanced_grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
 }

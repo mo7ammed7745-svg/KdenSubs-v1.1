@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KdenSubs</title>
+    <link rel="stylesheet" href="CSS/monolith.min.css" />
+    <link rel="stylesheet" href="CSS/icon.css">
+    <link rel="stylesheet" type="text/css" href="CSS/main_improved.css" />
+    <script src="JS/pickr.min.js"></script>
+    <script src="JS/jszip.min.js"></script>
+    <script src="JS/FileSaver.js"></script>
+</head>
+
+<body>
+
+    <header class="app-header">
+        <div class="app-header-inner">
+            <h1 class="app-title">KdenSubs</h1>
+            <p class="app-tagline">Convert subtitles to kdenlive titles</p>
+        </div>
+    </header>
+
+    <div class="input_container">
+        <div class="input_card">
+            <div class="input_card_header">
+                <span class="input_card_label">Paste subtitle</span>
+                <span class="input_card_label">OR upload SRT file</span>
+            </div>
+            <textarea class="textarea" id="input" placeholder="Paste your SRT subtitle here..."></textarea>
+            <div class="upload" id="div_upload">
+                <input type="file" id="upload" accept=".srt" style="display:none;">
+                <span class="upload_icon">&#8682;</span>
+                <h3>Upload</h3>
+                <span class="upload_hint">Drop an .srt file or click to browse</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="customize_container">
+
+        <div class="project_settigs">
+
+            <div class="field-group">
+                <span class="field-group-title">Project</span>
+                <div class="framerate_wrap">
+                    <label for="framerate" class="field-label">Frame rate:</label>
+                    <input class="field-input" type="number" min="1" value="60" id="framerate">
+                    <span class="field-suffix">fps</span>
+                </div>
+            </div>
+
+            <div class="template_section">
+                <span class="field-group-title">Template</span>
+                <div class="template_upload" id="template_upload">
+                    <input type="file" id="template_file_input" accept=".kdenlivetitle" style="display:none;">
+                    <span id="template_label">Upload .kdenlivetitle</span>
+                </div>
+                <div class="template_info" id="template_info" style="display:none;">
+                    <span id="template_name"></span>
+                    <button type="button" id="template_remove" title="Remove template">&times;</button>
+                </div>
+            </div>
+
+            <button type="button" id="download">Download Subtitles</button>
+
+        </div>
+
+        <details class="advanced" id="advanced">
+            <summary>Advanced Options</summary>
+
+            <div class="size" id="size_section">
+                <label for="select_size" class="field-label">Project Size:
+                    <select id="select_size" class="field-input field-select">
+                        <option value="3840x2160">4K</option>
+                        <option value="2560x1440">2.5K</option>
+                        <option value="1920x1080" selected="selected">1080p</option>
+                        <option value="1280x720">720p</option>
+                        <option value="854x480">480p</option>
+                        <option value="640x360">360p</option>
+                        <option value="custom">custom...</option>
+                    </select>
+                </label>
+
+                <div class="column" id=custom_div>
+                    <div class="row">
+                        <label for="custom_width" class="field-label">Width:</label>
+                        <input type="number" id="custom_width" placeholder="Width" class="field-input">
+                    </div>
+                    <div class="row">
+                        <label for="custom_height" class="field-label">Height:</label>
+                        <input type="number" id="custom_height" placeholder="Height" class="field-input">
+                    </div>
+                </div>
+            </div>
+
+            <div class="template_options" id="template_options" style="display:none;">
+                <label for="max_chars" class="field-label">Max chars/line:</label>
+                <input type="number" id="max_chars" min="0" placeholder="Empty=srt" class="field-input">
+                <label for="custom_y" class="field-label">Y position:</label>
+                <input type="number" id="custom_y" placeholder="Empty=template" class="field-input">
+            </div>
+
+            <div class="advanced_grid">
+                <div class="canvas panel" id="canvas_section">
+                    <label class="field-label">
+                        Display Text:<input type="text" id="display_text" value="Drag me!" class="field-input">
+                        X: <input type="number" id="text_X" class="field-input field-input-sm">
+                        Y: <input type="number" id="text_Y" class="field-input field-input-sm">
+                    </label>
+                    <label class="checkbox-label">Show Guides:<input type="checkbox" id="grid" checked></label>
+                    <section class="align_buttons">
+                        <button type="button" id="align_left" title="Align left"><i class="material-icons">format_align_left</i></button>
+                        <button type="button" id="align_center" title="Align center"><i class="material-icons">format_align_center</i></button>
+                        <button type="button" id="align_right" title="Align right"><i class="material-icons">format_align_right</i></button>
+                        <button type="button" id="align_top" title="Align top"><i class="material-icons">vertical_align_top</i></button>
+                        <button type="button" id="align_middle" title="Align middle"><i class="material-icons">vertical_align_center</i></button>
+                        <button type="button" id="align_bottom" title="Align bottom"><i class="material-icons">vertical_align_bottom</i></button>
+                    </section>
+                    <canvas id="canvas" style="display:block;">HTML canvas not supported in browser</canvas>
+                </div>
+
+                <form class="form panel" id="form_section">
+                    <select class="two_col field-input field-select" id="select_font"></select>
+                    <input class="two_col field-input" type="text" placeholder="Custom Font" id="custom_font" style="display: none;">
+
+                    <label for="font_size" class="field-label">Font Size:</label>
+                    <input type="number" id="font_size" max="10000" value="60" class="field-input">
+                    <label for="font_weight" class="field-label">Weight:</label>
+                    <input type="range" min="100" max="900" step="100" value="400" id="font_weight" class="field-range">
+                    <section class="right">
+                        <label for="font_underline" class="icon-checkbox"><i class="material-icons">format_underlined</i><input type="checkbox" id="font_underline"></label>
+                        <label for="italic" class="icon-checkbox"><i class="material-icons">format_italic</i><input type="checkbox" id="italic"></label>
+                    </section>
+
+                    <label class="radio-label"><input type="radio" name="fontColor" id="solid_radio" checked>Solid Color:</label>
+                    <div id="solid"></div>
+
+                    <label class="radio-label"><input type="radio" name="fontColor" id="gradient_radio">Gradient:</label>
+                    <div id="gradient"></div>
+                    <section class="right gradient_range">
+                        <span>0%</span>
+                        <input type="range" min="0.01" max="1.99" step="0.01" value="1" id="gradient_slider" class="field-range">
+                        <span>100%</span>
+                    </section>
+
+                    <label for="font_outline" class="field-label">Font Outline:</label>
+                    <section class="grid">
+                        <input type="number" min="0" max="200" step="1" value="0" id="font_outline" class="field-input">
+                        <div id="font_outline_color"></div>
+                    </section>
+
+                    <fieldset id="shadow_div">
+                        <legend><label for="shadow" class="checkbox-label">Shadow<input type="checkbox" id="shadow"></label></legend>
+
+                        <label for="shadow_blur" class="field-label">Shadow Blur:</label>
+                        <input type="number" id="shadow_blur" min="0" max="99" value="5" class="field-input">
+                        <div id="shadow_color"></div>
+
+                        <label class="field-label">Offset:</label>
+                        <input type="number" id="shadow_X" max="100" value="0" class="field-input">
+                        <input type="number" id="shadow_Y" max="100" value="0" class="field-input">
+                    </fieldset>
+
+                    <label for="letter_spacing" class="field-label">Letter Spacing:</label>
+                    <input type="number" id="letter_spacing" max="500" value="0" class="field-input">
+                    <label for="line_spacing" class="field-label">Line Spacing:</label>
+                    <input type="number" id="line_spacing" max="5000" value="0" class="field-input">
+                </form>
+            </div>
+        </details>
+
+    </div>
+    <script src="JS/main.js"></script>
+</body>
+
+</html>

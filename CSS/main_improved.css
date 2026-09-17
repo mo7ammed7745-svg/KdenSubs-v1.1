@@ -1,0 +1,658 @@
+:root {
+    --bg: #1e2126;
+    --bg-elevated: #262a31;
+    --bg-hover: #2f343d;
+    --border: #39404b;
+    --accent: #84b9f5;
+    --accent-soft: rgba(132, 185, 245, 0.16);
+    --accent-hover: #f18476;
+    --text: #e8edf3;
+    --text-muted: #9aa7b8;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-size: 1rem;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+}
+
+/* ---------------- Header ---------------- */
+
+.app-header {
+    background: linear-gradient(135deg, #2a4d80, #84b9f5);
+    text-align: center;
+    padding: 1.25rem 1rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    position: relative;
+    z-index: 2;
+}
+
+.app-header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.app-title {
+    margin: 0;
+    font-size: 2rem;
+    letter-spacing: 0.5px;
+    color: #fff;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+.app-tagline {
+    margin: 0.25rem 0 0;
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 0.95rem;
+}
+
+/* ---------------- Input area ---------------- */
+
+.input_container {
+    background-image: radial-gradient(#3a414b, var(--bg) 70%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem 1rem 4rem;
+    min-height: 75vh;
+    box-shadow: inset 0 -15px 30px rgba(0, 0, 0, 0.5);
+}
+
+.input_card {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    width: min(72rem, 100%);
+    padding: 2rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+}
+
+.input_card_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.input_card_label {
+    font-weight: bold;
+    font-size: 1.05rem;
+    color: var(--accent);
+}
+
+.textarea {
+    font-size: 1rem;
+    font-family: ui-monospace, Consolas, monospace;
+    background: var(--bg);
+    color: var(--text);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    resize: vertical;
+    padding: 1rem;
+    min-height: 16rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.textarea::placeholder {
+    color: var(--text-muted);
+}
+
+.textarea:hover,
+.textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+/* ---------------- Upload box ---------------- */
+
+.upload {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    padding: 1.75rem 1rem;
+    cursor: pointer;
+    color: var(--text);
+    transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+    background: rgba(132, 185, 245, 0.04);
+}
+
+.upload:hover,
+.upload.hover {
+    border-color: var(--accent-hover);
+    background-color: var(--accent-soft);
+    box-shadow: 0 0 18px rgba(241, 132, 118, 0.35);
+}
+
+.upload h3 {
+    margin: 0;
+    font-size: 1.15rem;
+    color: var(--accent);
+}
+
+.upload_icon {
+    font-size: 2rem;
+    color: var(--accent);
+    line-height: 1;
+}
+
+.upload_hint {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* ---------------- Layout: settings ---------------- */
+
+.customize_container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2.5rem 1rem 4rem;
+    color: var(--text);
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.project_settigs {
+    display: grid;
+    grid-template-columns: 1fr 1.6fr auto;
+    gap: 2rem;
+    align-items: start;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35);
+}
+
+/* ---------------- Field group (framerate) ---------------- */
+
+.field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.field-group-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--text-muted);
+}
+
+.framerate_wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.framerate_wrap .field-input {
+    width: 6rem;
+    text-align: center;
+}
+
+.field-suffix {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+/* ---------------- Shared field styles ---------------- */
+
+.field-label {
+    color: var(--text);
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.field-input {
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.5rem 0.7rem;
+    font-size: 0.9rem;
+    font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.field-input:hover {
+    border-color: var(--accent-hover);
+}
+
+.field-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.field-input::placeholder {
+    color: var(--text-muted);
+}
+
+.field-input-sm {
+    width: 5rem;
+}
+
+.field-select {
+    cursor: pointer;
+}
+
+.field-range {
+    accent-color: var(--accent);
+}
+
+/* ---------------- Checkbox labels ---------------- */
+
+.checkbox-label,
+.radio-label,
+.icon-checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    cursor: pointer;
+    color: var(--text);
+    font-size: 0.9rem;
+    user-select: none;
+}
+
+.checkbox-label input,
+.radio-label input,
+.icon-checkbox input {
+    accent-color: var(--accent);
+    cursor: pointer;
+}
+
+.icon-checkbox {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.35rem 0.6rem;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+.icon-checkbox:has(input:checked) {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+}
+
+.icon-checkbox .material-icons {
+    font-size: 22px;
+    color: var(--accent);
+}
+
+/* ---------------- Template section ---------------- */
+
+.template_section {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+.template_upload {
+    border: 2px dashed var(--border);
+    border-radius: 10px;
+    padding: 0.55rem 1.1rem;
+    cursor: pointer;
+    text-align: center;
+    color: var(--text);
+    background-color: var(--accent-soft);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.template_upload:hover {
+    border-color: var(--accent-hover);
+    box-shadow: 0 0 12px rgba(241, 132, 118, 0.4);
+}
+
+.template_info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--accent);
+}
+
+.template_section .template_info button {
+    background: transparent;
+    border: 1px solid var(--accent-hover);
+    color: var(--accent-hover);
+    cursor: pointer;
+    font-size: 1.2rem;
+    border-radius: 50%;
+    width: 1.8rem;
+    height: 1.8rem;
+    line-height: 1;
+    padding: 0;
+    align-self: auto;
+    justify-self: auto;
+    box-shadow: none;
+}
+
+.template_info button:hover {
+    background-color: rgba(241, 132, 118, 0.15);
+}
+
+.template_options {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 0.9rem 1.2rem;
+    margin-bottom: 1rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+}
+
+.template_options .field-input {
+    width: 8rem;
+}
+
+/* ---------------- Download button ---------------- */
+
+.project_settigs button {
+    font-size: 1.05rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 10px;
+    background: var(--accent);
+    color: #10202f;
+    cursor: pointer;
+    padding: 0.8rem 1.8rem;
+    align-self: center;
+    justify-self: end;
+    box-shadow: 0 6px 18px rgba(132, 185, 245, 0.3);
+    transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+}
+
+.project_settigs button:hover {
+    background: #9bc7f9;
+    box-shadow: 0 8px 24px rgba(241, 132, 118, 0.4);
+}
+
+.project_settigs button:active {
+    transform: scale(0.97);
+}
+
+/* ---------------- Advanced drawer ---------------- */
+
+.advanced {
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--bg-elevated);
+    overflow: hidden;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35);
+}
+
+.advanced summary {
+    cursor: pointer;
+    color: var(--accent);
+    font-weight: bold;
+    text-align: center;
+    padding: 0.9rem 1rem;
+    background: linear-gradient(90deg, transparent, var(--accent-soft), transparent);
+    list-style: none;
+    user-select: none;
+    transition: color 0.2s;
+}
+
+.advanced summary::-webkit-details-marker {
+    display: none;
+}
+
+.advanced summary:hover {
+    color: var(--accent-hover);
+}
+
+.advanced[open] summary {
+    border-bottom: 1px solid var(--border);
+}
+
+.advanced_body {
+    padding: 1.5rem 1.5rem 0;
+}
+
+/* ---------------- Size + custom dims ---------------- */
+
+.size {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    padding: 0.9rem 1.2rem;
+}
+
+.size .column {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    transition: opacity 0.3s;
+}
+
+.size .row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.size .field-input {
+    width: 10rem;
+}
+
+.size .field-input#custom_width,
+.size .field-input#custom_height {
+    width: 6rem;
+}
+
+/* ---------------- Advanced grid ---------------- */
+
+.advanced_grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    gap: 1.5rem;
+    padding: 1.5rem;
+}
+
+.panel {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+}
+
+/* ---------------- Canvas panel ---------------- */
+
+.canvas {
+    display: grid;
+    justify-items: start;
+    align-content: start;
+    gap: 1rem;
+    padding: 1.25rem;
+}
+
+.canvas input {
+    margin-left: 1px;
+    margin-right: 15px;
+}
+
+.align_buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.align_buttons button {
+    border: 1px solid var(--border);
+    background-color: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    width: 2.6rem;
+    height: 2.6rem;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s, border-color 0.2s, background-color 0.2s;
+}
+
+.align_buttons button:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: var(--accent-soft);
+}
+
+canvas {
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    background-color: rgb(230, 230, 200);
+    justify-self: start;
+    max-width: 100%;
+}
+
+/* ---------------- Form panel ---------------- */
+
+.form {
+    padding: 1.25rem;
+    margin: 0;
+    display: grid;
+    align-items: center;
+    align-content: start;
+    gap: 1rem;
+    grid-template-columns: 10.5rem 1fr;
+}
+
+.form .two_col {
+    grid-column: span 2;
+    align-self: start;
+}
+
+.form .right {
+    grid-column: 2 / 3;
+    display: grid;
+    grid-auto-flow: column;
+    width: 100%;
+    align-items: center;
+    justify-content: start;
+    gap: 0.5rem;
+}
+
+.form .gradient_range {
+    align-items: center;
+    justify-items: center;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.form > fieldset {
+    grid-column: span 2;
+    display: grid;
+    grid-template-columns: 10rem 1fr 1fr;
+    align-items: center;
+    padding: 0.8rem;
+    gap: 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+}
+
+.form > fieldset legend {
+    padding: 0 0.4rem;
+    color: var(--accent);
+}
+
+.form > fieldset:disabled legend {
+    color: var(--text-muted);
+}
+
+.form > .grid {
+    display: grid;
+    grid-template-columns: 6.7rem 6.7rem;
+    column-gap: 0.8rem;
+    align-items: center;
+}
+
+.form input[type="radio"] {
+    margin-left: 0;
+}
+
+.form .field-input {
+    width: 100%;
+}
+
+.form .field-input.two_col {
+    width: 100%;
+}
+
+/* ---------------- Pickr placeholders ---------------- */
+
+#solid,
+#gradient,
+#font_outline_color,
+#shadow_color {
+    width: 2.2rem;
+    height: 2.2rem;
+}
+
+.pickr .pcr-button {
+    position: unset;
+    width: 2.2rem !important;
+    height: 2.2rem !important;
+    border-radius: 8px;
+}
+
+.pickr button:focus {
+    box-shadow: none;
+}
+
+/* ---------------- Misc ---------------- */
+
+.material-icons {
+    vertical-align: middle;
+}
+
+/* ---------------- Responsive ---------------- */
+
+@media (max-width: 900px) {
+    .project_settigs {
+        grid-template-columns: 1fr;
+    }
+
+    .project_settigs button {
+        justify-self: stretch;
+    }
+
+    .advanced_grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form {
+        grid-template-columns: 1fr;
+    }
+
+    .form .right {
+        grid-column: auto;
+        justify-content: start;
+    }
+
+    .form > fieldset {
+        grid-column: auto;
+        grid-template-columns: 1fr;
+    }
+}

@@ -37,6 +37,15 @@ const display_text = document.getElementById("display_text");
 const text_X = document.getElementById("text_X");
 const text_Y = document.getElementById("text_Y");
 const framerate = document.getElementById("framerate");
+const template_upload = document.getElementById("template_upload");
+const template_file_input = document.getElementById("template_file_input");
+const template_label = document.getElementById("template_label");
+const template_info = document.getElementById("template_info");
+const template_name = document.getElementById("template_name");
+const template_remove = document.getElementById("template_remove");
+const template_options = document.getElementById("template_options");
+const max_chars_input = document.getElementById("max_chars");
+const custom_y_input = document.getElementById("custom_y");
 const download = document.getElementById("download");
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
@@ -158,6 +167,9 @@ let project = {};
 let factor = 1;
 let p0 = 0;
 let p1 = 1;
+let templateData = null;
+const xmlParser = new DOMParser();
+const xmlSerializer = new XMLSerializer();
 let font_list = ["Arial", "custom font...", "Baskerville Old Face", "Bodoni MT", "Book Antiqua", "Calibri", "Cambria", "Candara", "Consolas", "Constantia", "Courier New", "Fixedsys", "Franklin Gothic Medium", "Garamond", "Georgia", "Gill Sans MT", "Goudy Old Style", "Impact", "Lucida Console", "Lucida Sans Unicode", "Palatino Linotype", "Segoe UI", "Tahoma", "Times New Roman", "Trebuchet MS", "Verdana"];
 if (detectOS() == "macOS") font_list = ["Arial", "custom font...", "Baskerville", "Big Caslon", "Courier", "Courier New", "DejaVu Sans", "Didot", "Futura", "Garamond", "Geneva", "Georgia", "Gill Sans", "Helvetica", "Helvetica Neue", "Hoefler Text", "Impact", "Lucida Bright", "Lucida Grande", "Menlo", "Monaco", "Optima", "Palatino", "San Francisco", "Times", "Times New Roman", "Trebuchet MS", "Verdana"];
 if (detectOS() == "Linux") font_list = ["Arial", "custom font...", "Baskerville Old Face", "Bitstream Charter", "Bitstream Vera Sans", "Bitstream Vera Serif", "Cantarell", "Century Schoolbook L", "Code New Roman", "Consolas", "DejaVu Mono", "DejaVu Sans", "DejaVu Sans Mono", "DejaVu Serif", "Droid Sans Mono", "Fira Code", "Fira Sans", "FreeMono", "FreeSans", "Geneva", "Garamond", "Georgia", "Helvetica", "Helvetica Neue", "Hoefler Text", "Inconsolata", "Liberation Mono", "Liberation Sans", "Liberation Serif", "Lucida Bright", "Nimbus Mono L", "Nimbus Roman No 9 L", "Nimbus Sans L", "Noto Sans", "Open Sans", "Palatino", "Palatino Linotype", "Roboto", "Roboto Mono", "Segoe UI", "Source Code Pro", "Tahoma", "Times", "Times New Roman", "Trebuchet MS", "URW Palladio L", "Verdana"];
@@ -318,6 +330,37 @@ upload.addEventListener('change', (event) => {
 
     reader.readAsText(file);
 });
+
+template_upload.addEventListener('click', () => {
+    template_file_input.click();
+});
+
+template_file_input.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+
+    reader.onload = () => {
+        try {
+            templateData = parseTemplate(reader.result);
+            activate_template(file.name);
+        } catch (e) {
+            templateData = null;
+            alert("Could not parse the template file. Make sure it is a valid .kdenlivetitle file.");
+        }
+    };
+
+    reader.onerror = () => {
+        console.error('Error reading file');
+    };
+
+    reader.readAsText(file);
+});
+
+template_remove.addEventListener('click', () => {
+    clear_template();
+});
+
 window.addEventListener("resize", () => {
     resize_canvas();
 });
@@ -556,6 +599,10 @@ function render() {
 }
 
 function download_subtitles() {
+    if (templateData) {
+        download_template_subtitles();
+        return;
+    }
     if (gradient_radio.checked) {
         if (pickr.getSelectedColor().toHEXA().toString().length === 7) color1 = "#ff" + pickr.getSelectedColor().toHEXA().toString().slice(1).toLowerCase();
         if (pickr.getSelectedColor().toHEXA().toString().length === 9) color1 = "#" + pickr.getSelectedColor().toHEXA().toString().slice(-2).toLowerCase() + pickr.getSelectedColor().toHEXA().toString().slice(1, -2).toLowerCase();
@@ -639,6 +686,140 @@ function download_subtitles() {
             });
         } else {
             zip.file("titles/" + String(i + 1).padStart(pad, '0') + ".kdenlivetitle", content, {
+                date: dateWithOffset
+            });
+        }
+    });
+    zip.generateAsync({
+        type: "blob"
+    }).then(function(blob) {
+        saveAs(blob, file_name + ".zip");
+    });
+}
+
+function parseTemplate(xmlText) {
+    const doc = xmlParser.parseFromString(xmlText, "text/xml");
+    if (doc.getElementsByTagName("parsererror").length) throw new Error("Invalid XML");
+    const root = doc.documentElement;
+    const content = doc.getElementsByTagName("content")[0];
+    const position = doc.getElementsByTagName("position")[0];
+    return {
+        doc: doc,
+        width: root.getAttribute("width"),
+        height: root.getAttribute("height"),
+        box_height: content ? parseFloat(content.getAttribute("box-height")) : null,
+        y: position ? parseFloat(position.getAttribute("y")) : null
+    };
+}
+
+function activate_template(name) {
+    template_name.textContent = "Template: " + name;
+    template_info.style.display = "flex";
+    template_upload.style.display = "none";
+    template_label.textContent = "Upload .kdenlivetitle";
+    template_options.style.display = "flex";
+}
+
+function clear_template() {
+    templateData = null;
+    template_info.style.display = "none";
+    template_upload.style.display = "flex";
+    template_options.style.display = "none";
+}
+
+function wrap_text(text, max_chars) {
+    const re = new RegExp(".{1," + max_chars + "}[^ ]*", "g");
+    return text.replace(re, "$&\n").replace(/\n /g, "\n").replace(/\n$/, "");
+}
+
+function download_template_subtitles() {
+    const blocks = input.value.split(/\n\n/);
+    while (blocks[blocks.length - 1] == 0) {
+        blocks.pop();
+    }
+
+    const start = blocks.map(block => block.slice(block.indexOf("\n") + 1, block.indexOf("\n") + 13)).map(line => line.replace(/,/g, ".")).map(time => new Date('1970-01-01T' + time)).map(date => (date - new Date("1970-01-01T00:00:00.000")) / 1000).map(n => Math.round(n * framerate.value));
+    const end = blocks.map(block => block.slice(block.indexOf("\n") + 18, block.indexOf("\n") + 30)).map(line => line.replace(/,/g, ".")).map(time => new Date('1970-01-01T' + time)).map(date => (date - new Date("1970-01-01T00:00:00.000")) / 1000).map(n => Math.round(n * framerate.value));
+
+    const blank = [];
+    let pre_end = 0;
+    for (let i = 0; i < blocks.length; i++) {
+        blank[i] = start[i] - pre_end;
+        pre_end = end[i];
+    }
+    const duration = [];
+    for (let i = 0; i < blocks.length; i++) {
+        duration[i] = end[i] - start[i];
+    }
+
+    const max_chars = max_chars_input.value.trim();
+    const y_override = custom_y_input.value.trim();
+    const template_y = (templateData.y != null) ? templateData.y : 0;
+    const y = (y_override !== "") ? Number(y_override) : template_y;
+    const box_height = templateData.box_height;
+
+    const content = [];
+
+    for (let i = 0; i < blocks.length; i++) {
+        const raw_lines = blocks[i].slice(blocks[i].indexOf("\n") + 31).split(/\r?\n/).map(l => l.trim()).filter(l => l !== "");
+        let sub_text;
+        let break_count = 0;
+        if (max_chars === "" ) {
+            sub_text = raw_lines.join("\n");
+            break_count = (sub_text.match(/\n/g) || []).length;
+        } else if (Number(max_chars) === 0) {
+            sub_text = raw_lines.join(" ");
+        } else {
+            sub_text = raw_lines.join(" ");
+            if (sub_text.length > Number(max_chars)) {
+                sub_text = wrap_text(sub_text, Number(max_chars));
+                break_count = (sub_text.match(/\n/g) || []).length;
+            }
+        }
+
+        let new_y = y;
+        let new_box_height = box_height;
+        if (break_count > 0 && box_height != null) {
+            new_box_height = box_height * (break_count + 1);
+            new_y = box_height > 99 ? y - box_height * break_count : y - box_height * break_count * 0.8;
+        }
+
+        if (blank[i] > 0) {
+            const blank_doc = templateData.doc.documentElement.cloneNode(true);
+            blank_doc.setAttribute("duration", blank[i]);
+            [...blank_doc.getElementsByTagName("item")].forEach(el => el.remove());
+            content.push({ data: xmlSerializer.serializeToString(blank_doc), isBlank: true });
+        }
+
+        const clone = templateData.doc.documentElement.cloneNode(true);
+        clone.setAttribute("duration", duration[i]);
+        const pos = clone.getElementsByTagName("position");
+        if (pos.length) {
+            pos[0].setAttribute("x", "0");
+            if (y_override !== "" || break_count > 0) pos[0].setAttribute("y", String(new_y));
+        }
+        const cont = clone.getElementsByTagName("content");
+        if (cont.length) {
+            cont[0].setAttribute("alignment", "4");
+            cont[0].setAttribute("box-width", String(templateData.width));
+            if (break_count > 0 && box_height != null) cont[0].setAttribute("box-height", String(new_box_height));
+            cont[0].textContent = sub_text;
+        }
+        content.push({ data: xmlSerializer.serializeToString(clone), isBlank: false });
+    }
+
+    const zip = new JSZip();
+    const pad = content.length.toString().length;
+    const currDate = new Date();
+    const dateWithOffset = new Date(currDate.getTime() - currDate.getTimezoneOffset() * 60000);
+    const dateWithOffset_blank = new Date(currDate.getTime() - currDate.getTimezoneOffset() * 60000 - 60000);
+    content.forEach((entry, i) => {
+        if (entry.isBlank) {
+            zip.file("titles/" + String(i + 1).padStart(pad, '0') + "_.kdenlivetitle", entry.data, {
+                date: dateWithOffset_blank
+            });
+        } else {
+            zip.file("titles/" + String(i + 1).padStart(pad, '0') + ".kdenlivetitle", entry.data, {
                 date: dateWithOffset
             });
         }
